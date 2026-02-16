@@ -42,6 +42,10 @@ func runChecks(cfg *config.Config, storage storage.Storage) {
 		case "postgres":
 			databaseChecker = checker.NewPostgresCheckerWithStorage(
 				dbCfg.Host, dbCfg.Port, dbCfg.User, dbCfg.Password, dbCfg.DBName, storage)
+		case "redis":
+			// Redis 用户名可以为空，使用密码和数据库编号
+			databaseChecker = checker.NewRedisCheckerWithStorage(
+				dbCfg.Host, dbCfg.Port, dbCfg.Password, storage)
 		default:
 			log.Printf("不支持的数据库类型: %s", dbCfg.Type)
 			continue
@@ -98,7 +102,7 @@ func main() {
 	storageCfg := cfg.Storage
 	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		storageCfg.Host, storageCfg.Port, storageCfg.User, storageCfg.Password, storageCfg.DBName)
-	storage, err := storage.NewPostgresStorage(connStr)
+	pgStorage, err := storage.NewPostgresStorage(connStr)
 	if err != nil {
 		log.Fatalf("初始化存储失败: %v", err)
 	}
@@ -113,7 +117,7 @@ func main() {
 	reloadChan := make(chan struct{})
 	go watchConfig(cfgFile, reloadChan)
 
-	runChecks(currentConfig, storage) // 传入 storage 实例
+	runChecks(currentConfig, pgStorage) // 传入 storage 实例
 
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
@@ -135,7 +139,7 @@ func main() {
 			mu.Unlock()
 			cancel()
 			_, cancel = context.WithCancel(context.Background())
-			runChecks(currentConfig, storage) // 重新传入 storage 实例
+			runChecks(currentConfig, pgStorage) // 重新传入 storage 实例
 		}
 	}
 }
