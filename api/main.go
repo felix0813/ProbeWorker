@@ -141,7 +141,11 @@ func (s *Store) getHistory(id string) []ProbeHistory {
 }
 
 func main() {
-	store, err := NewStore("data/probes.json")
+	dataFile := getenv("API_DATA_FILE", "data/probes.json")
+	webDir := getenv("API_WEB_DIR", "../web")
+	listenAddr := getenv("API_LISTEN_ADDR", ":8080")
+
+	store, err := NewStore(dataFile)
 	if err != nil {
 		log.Fatalf("init store failed: %v", err)
 	}
@@ -259,9 +263,16 @@ func main() {
 			http.NotFound(w, r)
 		}
 	})
-	mux.Handle("/", http.FileServer(http.Dir("../web")))
-	log.Printf("server listening on :8080")
-	log.Fatal(http.ListenAndServe(":8080", withCORS(mux)))
+	mux.Handle("/", http.FileServer(http.Dir(webDir)))
+	log.Printf("server listening on %s", listenAddr)
+	log.Fatal(http.ListenAndServe(listenAddr, withCORS(mux)))
+}
+
+func getenv(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
 }
 
 func runCheck(p Probe) ProbeHistory {

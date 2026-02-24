@@ -1,4 +1,4 @@
-const API = '/api';
+const API = './api';
 const form = document.getElementById('probe-form');
 const probesBody = document.getElementById('probes-body');
 const historyEl = document.getElementById('history');
