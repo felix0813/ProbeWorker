@@ -1,0 +1,25 @@
+# Linux user/group that runs ProbeWorker
+DEPLOY_USER=www-data
+DEPLOY_GROUP=www-data
+
+# Install target directory
+INSTALL_DIR=/opt/probeworker
+
+# Web base path, Probe UI will be available at: https://your-domain${WEB_BASE_PATH}/
+WEB_BASE_PATH=/probe
+
+# API internal bind settings (used by nginx reverse proxy)
+API_LISTEN_HOST=127.0.0.1
+API_PORT=18080
+
+# Probe worker config path (you must provide this file)
+PROBE_CONFIG_FILE=/etc/probeworker/config.json
+
+# Optional overrides
+# SERVICE_DIR=/etc/systemd/system
+# NGINX_CONF_DIR=/etc/nginx/conf.d
+# NGINX_CONF_NAME=probeworker.conf
+# API_SERVICE_NAME=probeworker-api
+# PROBE_SERVICE_NAME=probeworker-worker
+# API_BIN_NAME=probe-api
+# PROBE_BIN_NAME=probe-worker
