@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Probe Worker 控制台</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Probe Worker 探针管理</h1>
+      <section class="panel">
+        <h2>创建 / 编辑探针</h2>
+        <form id="probe-form">
+          <input type="hidden" id="probe-id" />
+          <div class="grid">
+            <label>名称<input id="name" required /></label>
+            <label>类型
+              <select id="type" required>
+                <option value="postgres">PostgreSQL</option>
+                <option value="redis">Redis</option>
+              </select>
+            </label>
+            <label>主机<input id="host" required /></label>
+            <label>端口<input id="port" type="number" required /></label>
+            <label>用户<input id="user" /></label>
+            <label>数据库名<input id="dbname" /></label>
+            <label>密码<input id="password" type="password" /></label>
+            <label class="checkbox"><input id="enabled" type="checkbox" checked />启用</label>
+          </div>
+          <div class="actions">
+            <button type="submit">保存</button>
+            <button type="button" id="reset-btn">清空</button>
+            <button type="button" id="check-all-btn">检查全部启用探针</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>探针列表</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>名称</th><th>类型</th><th>地址</th><th>状态</th><th>最近检查</th><th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="probes-body"></tbody>
+        </table>
+      </section>
+
+      <section class="panel">
+        <h2>历史记录</h2>
+        <ul id="history"></ul>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>
